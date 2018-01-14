@@ -1,0 +1,43 @@
+
+<div class="wrapper">
+  <div class="wrapper-head">
+    <button mat-raised-button color="primary" (click)="addNewIssue()">Add issue</button>
+  </div>
+  <div class="wrapper-list">
+    <div class="example-container mat-elevation-z8">
+      <mat-table #table [dataSource]="issuesSource" matSort>
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="dateEnd">
+          <mat-header-cell *matHeaderCellDef> Date end </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.dateEnd | dateToString:'L'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+          <mat-cell *matCellDef="let element">  
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopImmediatePropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item *ngFor="let action of actionsWithIssue" (click)="selectActionWithIssue(element, action)" [disabled]="action.disabled(element)">
+                <mat-icon>{{action.icon}}</mat-icon>
+                <span>{{action.label}}</span>
+              </button>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="['title', 'dateEnd', 'id']"></mat-header-row>
+        <mat-row
+          [class.warning]="testWarning(row)"
+          [class.overdue]="testOverdue(row)"
+          [class.closed]="testClosed(row)"
+          *matRowDef="let row; columns: ['title', 'dateEnd', 'id'];"
+          (click)="openIssue(row)">
+        </mat-row>
+      </mat-table>
+    </div>
+  </div>
+</div>

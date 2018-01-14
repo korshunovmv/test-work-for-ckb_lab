@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>
+  <div>
+    <ng-container *ngIf="issue?.id!=='new'">
+      <button mat-raised-button color="primary" *ngIf="!issue?.closed" [disabled]="busy" (click)="changeStatusIssueAtClosed()">Close</button>
+      <button mat-raised-button color="primary" *ngIf="issue?.closed" [disabled]="busy" (click)="changeStatusIssueAtOpened()">Open</button>
+    </ng-container>
+  </div>
+  <button mat-icon-button>
+    <mat-icon (click)="closeWithDialog()">close</mat-icon>
+  </button>
+</h1>
+<mat-dialog-content>
+  <form *ngIf="issue" [formGroup]="issueForm">
+    <div class="form-controls">
+      <mat-form-field
+        class="title"
+        [hideRequiredMarker]="options.value.hideRequired"
+        [floatLabel]="options.value.floatLabel">
+        <input matInput placeholder="Title" [formControl]="issueForm?.controls?.title" required>
+        <mat-error *ngIf="issueForm?.controls?.title.invalid">{{getErrorMessageTitle()}}</mat-error>
+      </mat-form-field>
+      <mat-form-field
+        class="description"
+        [hideRequiredMarker]="options.value.hideRequired"
+        [floatLabel]="options.value.floatLabel">
+        <textarea
+          matInput
+          placeholder="Description"
+          [formControl]="issueForm?.controls?.description"
+          matTextareaAutosize
+          matAutosizeMinRows="2"
+          matAutosizeMaxRows="5">
+        </textarea>
+      </mat-form-field>
+      <mat-form-field
+        [hideRequiredMarker]="options.value.hideRequired"
+        [floatLabel]="options.value.floatLabel">
+        <input matInput [matDatepicker]="picker" [formControl]="issueForm?.controls?.dateEnd" placeholder="Choose a date end" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="issueForm?.controls?.dateEnd.invalid">{{getErrorMessageDateEnd()}}</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions class="buttons-issue">
+  <ng-container *ngIf="issue?.id==='new'">
+    <button mat-raised-button color="primary" [disabled]="!issueForm.valid || busy" (click)="addAndAddAnotherIssue()">Add and add another</button>
+    <button mat-raised-button color="primary" [disabled]="!issueForm.valid || busy" (click)="addIssueWithoutObservable()">Add</button>
+  </ng-container>
+  <button *ngIf="issue?.id!=='new'" mat-raised-button color="primary" [disabled]="!issueForm?.valid || busy" (click)="saveIssueWithoutObservable()">Save</button>
+</mat-dialog-actions>
